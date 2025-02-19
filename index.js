@@ -8,10 +8,7 @@ let client;
 
 async function connectToDatabase() {
   if (!client) {
-    client = new MongoClient(MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    client = new MongoClient(MONGO_URI);
     await client.connect();
   }
   return client.db(DB_NAME).collection(COLLECTION_NAME);
@@ -58,6 +55,7 @@ async function handleRequest(request) {
       return new Response("Data inserted successfully", { status: 201 });
     }
   } catch (error) {
+    console.error('Error connecting to MongoDB:', error); // Log the error for debugging
     return new Response(`Error: ${error.message}`, { status: 500 });
   }
 }
@@ -65,4 +63,3 @@ async function handleRequest(request) {
 addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request));
 });
-
